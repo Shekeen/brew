@@ -119,7 +119,7 @@ module Homebrew
     attrs << "pinned at #{f.pinned_version}" if f.pinned?
     attrs << "keg-only" if f.keg_only?
 
-    puts "#{f.full_name}: #{specs * ", "}#{" [#{attrs * ", "}]" unless attrs.empty?}"
+    puts "#{decorate_full_name(f.full_name)}: #{specs * ", "}#{" [#{attrs * ", "}]" unless attrs.empty?}"
     puts f.desc if f.desc
     puts Formatter.url(f.homepage) if f.homepage
 
@@ -163,6 +163,14 @@ module Homebrew
 
     c = Caveats.new(f)
     ohai "Caveats", c.caveats unless c.empty?
+  end
+
+  def decorate_full_name(full_name)
+    if !$stdout.tty?
+      full_name.to_s
+    else
+      "#{Tty.bold}#{full_name}#{Tty.reset}"
+    end
   end
 
   def decorate_dependencies(dependencies)
